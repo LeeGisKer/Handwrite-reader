@@ -1,15 +1,16 @@
 from flask import Flask, request, render_template, redirect, url_for
-import pytesseract
+import pytesseract 
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\ax_gi\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 from PIL import Image
 import os
 import uuid
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 
-def index():
+def home():
     if request.method == 'POST':
         if 'file' not in request.files:
             return "No file in the request", 400
@@ -24,7 +25,9 @@ def index():
         
         text = ocr_image(file_path)
         
-        return render_template('result.html', text=text)
+        return render_template('results.html', text=text)
+    else:
+        return render_template('index.html')
     
 def ocr_image(image_path):
     img = Image.open(image_path)
